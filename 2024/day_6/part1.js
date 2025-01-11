@@ -9,53 +9,34 @@ const guardGallivant = (input) => {
   // LEFT --> -1
   // DOWN --> +rowWidth
   const rowWidth = input.split("\n")[0].length;
-  console.log("rowWidth: ", rowWidth);
   const content = input.replaceAll("\n", "");
   const startingPoint = content.indexOf("^");
-  console.log("content: ", content);
   let place = startingPoint;
 
-  const distinctPositions = new Set([startingPoint]);
+  const distinctPositions = new Set([]);
 
-  const DIRECTIONS = {
-    UP: -rowWidth,
-    RIGHT: 1,
-    DOWN: rowWidth,
-    LEFT: -1,
-  };
-
-  let direction = DIRECTIONS.UP;
+  const DIRECTIONS = [-rowWidth, 1, rowWidth, -1];
+  let DIRECTIONS_INDEX = 0;
 
   while (true) {
     distinctPositions.add(place);
+    const direction = DIRECTIONS.at(DIRECTIONS_INDEX);
 
     if (!content[place + direction]) {
       break;
     }
 
-    if (direction === DIRECTIONS.UP && content[place - rowWidth] === "#") {
-      //   console.log("UP");
-      direction = DIRECTIONS.RIGHT;
-    }
-
-    if (direction === DIRECTIONS.RIGHT && content[place + 1] === "#") {
-      //   console.log("RIGHT", place + 1, content[place + 1]);
-      direction = DIRECTIONS.DOWN;
-    }
-
-    if (direction === DIRECTIONS.DOWN && content[place + rowWidth] === "#") {
-      //   console.log("DOWN", place + rowWidth, content[place + rowWidth]);
-      direction = DIRECTIONS.LEFT;
-    }
-
-    if (direction === DIRECTIONS.LEFT && content[place - 1] === "#") {
-      //   console.log("LEFT");
-      direction = DIRECTIONS.UP;
-    }
-
     place += direction;
+
+    if (content[place + direction] === "#") {
+      DIRECTIONS_INDEX++;
+      if (DIRECTIONS_INDEX > DIRECTIONS.length - 1) {
+        DIRECTIONS_INDEX = 0;
+      }
+    }
   }
 
+  console.log("distinctPositions: ", distinctPositions);
   return distinctPositions.size;
 };
 
